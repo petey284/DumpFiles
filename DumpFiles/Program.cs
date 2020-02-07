@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Xml;
 using DumpFiles.Utils;
 
 namespace DumpFiles
@@ -34,13 +35,24 @@ namespace DumpFiles
             // var currentProjectFile = currentDirectory.GetCurrentProjectFile();
             Console.WriteLine(currentProjectFile);
 
-            // Read and enhance project file.
-            // TODO
-            // TODO
-            // TODO
+            // Read project file.
+            var xml = new XmlDocument();
+            xml.Load(currentProjectFile);
 
-            // Run csharp compiler.
-            var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");
+            Console.WriteLine(xml.OuterXml);
+
+            // Enhance project file.
+            // TODO: https://stackoverflow.com/questions/49781946/programmatically-embed-resource-in-net-assembly
+
+            // <Project>
+            //   <ItemGroup>
+            //     <EmbeddedResource Include="Content\Item1.png" />
+            //     <EmbeddedResource Include="Content\Item2.png" />
+            //   </ItemGroup>
+            // </Project>
+
+              // Run csharp compiler.
+              var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");
             // compiler.RunAndWaitForExit("");
 
             Console.ReadLine();
