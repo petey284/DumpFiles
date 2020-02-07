@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
 using DumpFiles.Utils;
 
 namespace DumpFiles
@@ -39,7 +40,8 @@ namespace DumpFiles
             var xml = new XmlDocument();
             xml.Load(currentProjectFile);
 
-            Console.WriteLine(xml.OuterXml);
+            var parsedXml = XDocument.Parse(xml.OuterXml);
+            Console.WriteLine(parsedXml);
 
             // Enhance project file.
             // TODO: https://stackoverflow.com/questions/49781946/programmatically-embed-resource-in-net-assembly
