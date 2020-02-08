@@ -1,2 +1,4 @@
 _/
 .run.cmd
+*.bak
+*One.csproj
