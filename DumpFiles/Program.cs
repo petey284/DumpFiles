@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using DumpFiles.Utils;
 using SQLite;
+using Microsoft.Extensions.Configuration;
 
 namespace DumpFiles
 {
@@ -111,8 +112,12 @@ namespace DumpFiles
             //   </ItemGroup>
             // </Project>
 
-              // Run csharp compiler.
-              var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");
+            // Initial test to see how sqlite holds up with adding files
+            var test = new Testing();
+            test.CollectFilesFromProvidedDirectoryAndSaveAsEmbed();
+
+            // Run csharp compiler.
+            var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");
             // compiler.RunAndWaitForExit("");
 
             Console.ReadLine();
