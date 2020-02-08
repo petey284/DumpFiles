@@ -23,14 +23,36 @@ namespace DumpFiles
     {
         public string Name;
         private readonly SQLiteAsyncConnection DbConnection;
+        public Env EnvironmentInstance;
 
-        public FileDb(string fileDbPathname)
+        public FileDb(string fileDbPathname, string fullpath)
         {
             this.Name = fileDbPathname;
             this.DbConnection = new SQLiteAsyncConnection(fileDbPathname);
             this.DbConnection.CreateTable<File>();
+            this.EnvironmentInstance = new Env(fullpath);
         }
-        public static FileDb NewFile(string databasePath) => new FileDb(databasePath);
+
+        public static FileDb NewFile(string databasePath)
+        {
+            var fullpath = Path.Combine(Environment.CurrentDirectory, databasePath);
+            return new FileDb(databasePath, fullpath);
+        }
+      
+        public static FileDb NewFile(string databasePath, string parentDirectory)
+        {
+            var fullpath = Path.Combine(parentDirectory, databasePath);
+            return new FileDb(databasePath, fullpath);
+        }
+
+        public class Env
+        {
+            public string Fullpath;
+            public Env(string fullpath)
+            {
+                this.Fullpath = fullpath;
+            }
+        }
 
         public class File
         {
@@ -54,6 +76,8 @@ namespace DumpFiles
             this.DbConnection.Insert(_file);
             return this;
         }
+
+        public string Pathname => this.EnvironmentInstance.Fullpath;
 
         public void Print()
         {
@@ -103,23 +127,14 @@ namespace DumpFiles
             var xml = new XmlDocument();
             xml.Load(currentProjectFile);
 
-            var parsedXml = XDocument.Parse(xml.OuterXml);
-            Console.WriteLine(parsedXml);
+            var parsedXml = new XDocument(XDocument.Parse(xml.OuterXml));
 
-            // Enhance project file.
-            // TODO: https://stackoverflow.com/questions/49781946/programmatically-embed-resource-in-net-assembly
+            var embedElement = procedures.AddEmbedItemGroup(parsedXml, embed.Pathname);
+            parsedXml.Root.Add(embedElement);
 
-            // <Project>
-            //   <ItemGroup>
-            //     <EmbeddedResource Include="Content\Item1.png" />
-            //     <EmbeddedResource Include="Content\Item2.png" />
-            //   </ItemGroup>
-            // </Project>
+            Console.WriteLine(parsedXml.Document);
 
-            // Initial test to see how sqlite holds up with adding files
-            var test = new Procedures();
-            var dirName = new FileInfo(currentProjectFile).Directory.ToString();
-            test.CollectFilesFromProvidedDirectoryAndSaveAsEmbed(dirName);
+            // TODO: Backup the current project file and overwrite with new project file.
 
             // Run csharp compiler.
             var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");

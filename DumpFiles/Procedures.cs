@@ -67,17 +67,6 @@ namespace DumpFiles
 
         public XElement AddEmbedItemGroup(XDocument projectXml, string embedFilePath)
         {
-
-            // Enhance project file.
-            // TODO: https://stackoverflow.com/questions/49781946/programmatically-embed-resource-in-net-assembly
-
-            // <Project>
-            //   <ItemGroup>
-            //     <EmbeddedResource Include="Content\Item1.png" />
-            //     <EmbeddedResource Include="Content\Item2.png" />
-            //   </ItemGroup>
-            // </Project>
-
             var itemGroup = new XElement(XName.Get("ItemGroup"));
 
             var embedResource = ProjectXmlUtils.EmbedResourceWrapper(embedFilePath);
