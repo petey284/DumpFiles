@@ -8,7 +8,6 @@ using System.Xml;
 using System.Xml.Linq;
 using DumpFiles.Utils;
 using SQLite;
-using Microsoft.Extensions.Configuration;
 
 namespace DumpFiles
 {
