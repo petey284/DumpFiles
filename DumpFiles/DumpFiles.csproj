@@ -1,8 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>04201f84-8b4c-494d-8445-6942271ad77f</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="_\**" />
+    <EmbeddedResource Remove="_\**" />
+    <None Remove="_\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove=".run.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0" />
+  </ItemGroup>
 
 </Project>
