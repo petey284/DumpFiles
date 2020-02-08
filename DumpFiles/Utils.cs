@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace DumpFiles.Utils
 {
@@ -22,7 +23,7 @@ namespace DumpFiles.Utils
         public static string GetParentOfFileInHigherDirectory(this DirectoryInfo directory, Regex searchRegex)
         {
             var i = 0;
-            while(!directory.DirectoryContains(searchRegex))
+            while (!directory.DirectoryContains(searchRegex))
             {
                 directory = directory.Parent;
 
@@ -53,7 +54,18 @@ namespace DumpFiles.Utils
             // Get project file name
             var matches = Directory.GetFiles(parent.ToString(), "*.csproj");
 
-            return matches[0];;
+            return matches[0]; ;
+        }
+    }
+
+    public static class ProjectXmlUtils
+    {
+        public static XElement EmbedResourceWrapper(string embedFilepath)
+        {
+            var includeAttribute = new XAttribute("Include", embedFilepath);
+            var embedResource = new XElement(XName.Get("EmbeddedResource"), new[] { includeAttribute });
+
+            return embedResource;
         }
     }
 }
