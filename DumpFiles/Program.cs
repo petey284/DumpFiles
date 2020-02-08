@@ -118,7 +118,8 @@ namespace DumpFiles
 
             // Initial test to see how sqlite holds up with adding files
             var test = new Procedures();
-            test.CollectFilesFromProvidedDirectoryAndSaveAsEmbed();
+            var dirName = new FileInfo(currentProjectFile).Directory.ToString();
+            test.CollectFilesFromProvidedDirectoryAndSaveAsEmbed(dirName);
 
             // Run csharp compiler.
             var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");

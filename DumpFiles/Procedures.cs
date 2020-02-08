@@ -48,7 +48,8 @@ namespace DumpFiles
             var specialDirPath =
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + dirName;
 
-            if (File.Exists("first.embed")) { File.Delete("first.embd");  }
+            var fileExists = File.Exists("first.embed");
+            if (fileExists) { File.Delete("first.embed");  }
 
             var embed = FileDb.NewFile("first.embed");
 
