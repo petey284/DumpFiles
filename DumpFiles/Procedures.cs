@@ -8,17 +8,17 @@ using Microsoft.Extensions.Configuration;
 namespace DumpFiles
 {
 
-    public class Testing
+    public class Procedures
     {
 
         private IConfiguration Configuration { get; set; }
 
-        public Testing() : this(new ConfigurationBuilder()
+        public Procedures() : this(new ConfigurationBuilder()
                 .AddUserSecrets("04201f84-8b4c-494d-8445-6942271ad77f")
                 .Build())
         { }
 
-        internal Testing(IConfiguration configuration)
+        internal Procedures(IConfiguration configuration)
         {
             Configuration = configuration;
         }

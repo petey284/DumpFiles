@@ -95,6 +95,10 @@ namespace DumpFiles
             // var currentProjectFile = currentDirectory.GetCurrentProjectFile();
             Console.WriteLine(currentProjectFile);
 
+            // Initial test to see how sqlite holds up with adding files
+            var procedures = new Procedures();
+            var embed = procedures.CollectFilesFromDirectoryProvidedBySecretsAndSaveAsEmbed();
+
             // Read project file.
             var xml = new XmlDocument();
             xml.Load(currentProjectFile);
@@ -113,7 +117,7 @@ namespace DumpFiles
             // </Project>
 
             // Initial test to see how sqlite holds up with adding files
-            var test = new Testing();
+            var test = new Procedures();
             test.CollectFilesFromProvidedDirectoryAndSaveAsEmbed();
 
             // Run csharp compiler.
