@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
+using DumpFiles.Utils;
 using Microsoft.Extensions.Configuration;
 
 namespace DumpFiles
@@ -64,7 +65,7 @@ namespace DumpFiles
             return embed;
         }
 
-        public void AddEmbedItemGroup(XDocument projectXml, string embedFilePath)
+        public XElement AddEmbedItemGroup(XDocument projectXml, string embedFilePath)
         {
 
             // Enhance project file.
@@ -77,6 +78,12 @@ namespace DumpFiles
             //   </ItemGroup>
             // </Project>
 
+            var itemGroup = new XElement(XName.Get("ItemGroup"));
+
+            var embedResource = ProjectXmlUtils.EmbedResourceWrapper(embedFilePath);
+            itemGroup.Add(embedResource);
+
+            return itemGroup;
         }
     }
 
