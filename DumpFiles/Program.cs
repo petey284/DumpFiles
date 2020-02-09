@@ -133,7 +133,16 @@ namespace DumpFiles
 
             Console.WriteLine(parsedXml.Document);
 
-            // TODO: Backup the current project file and overwrite with new project file.
+            var backupProjectFile = currentProjectFile.Replace(".csproj", ".csproj.bak");
+            var anotherProjectFile = currentProjectFile.Replace(".csproj", "One.csproj");
+
+            if (File.Exists(backupProjectFile)) { File.Delete(backupProjectFile); }
+            File.Copy(currentProjectFile, backupProjectFile);
+
+            using (var writer = new StreamWriter(anotherProjectFile, true))
+            {
+                writer.Write(parsedXml.Document);
+            }
 
             // Run csharp compiler.
             var compiler = new Standard("C:\\Program Files\\dotnet\\dotnet.exe");
