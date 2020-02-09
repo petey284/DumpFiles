@@ -136,7 +136,7 @@ namespace DumpFiles
             // TODO: Backup the current project file and overwrite with new project file.
 
             // Run csharp compiler.
-            var compiler = new Standard("C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe");
+            var compiler = new Standard("C:\\Program Files\\dotnet\\dotnet.exe");
             // compiler.RunAndWaitForExit("");
 
             Console.ReadLine();
