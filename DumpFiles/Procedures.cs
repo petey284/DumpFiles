@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using DumpFiles.Utils;
@@ -73,6 +74,52 @@ namespace DumpFiles
             itemGroup.Add(embedResource);
 
             return itemGroup;
+        }
+
+        public void DuplicateAllFilesIncludingProjAndEmbedExcludingGitIgnored(
+            string dirName,
+            FileInfo newProjectFileInfo,
+            FileInfo embedFileInfo)
+        {
+            var relevantFiles = GetFilesViaGit(dirName);
+
+            // Create new directory and copy relevant files
+            if (Directory.Exists("temp")) { Directory.Delete("temp", true); }
+            var tempDir = Directory.CreateDirectory("temp");
+
+            foreach (var _file in relevantFiles)
+            {
+                if (!_file.Name.Contains(".csproj") && !_file.Name.Contains("gitignore"))
+                {
+                    var newFileName = Path.Combine(tempDir.FullName, _file.Name);
+                    _file.CopyTo(newFileName);
+                }
+            }
+
+            var newProjectFileName =
+                Path.Combine(tempDir.FullName, newProjectFileInfo.Name.Replace(".csproj.TOUPDATE", ".csproj"));
+
+            newProjectFileInfo.CopyTo(newProjectFileName);
+
+            var newEmbedFileName =
+                Path.Combine(tempDir.FullName, embedFileInfo.Name);
+
+            embedFileInfo.CopyTo(newEmbedFileName);
+        }
+
+        public List<FileInfo> GetFilesViaGit(string dirName)
+        {
+            var gitClient = new Standard("C:\\Users\\u1d246\\AppData\\Local\\Programs\\Git\\cmd\\git.exe");
+
+            gitClient.Proc.StartInfo.WorkingDirectory = dirName;
+
+            return gitClient
+                .RunAndWaitForExit("ls-files")
+                .TakeContent()
+                .Split('\n')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => new FileInfo(dirName + "\\" + x))
+                .ToList();
         }
     }
 

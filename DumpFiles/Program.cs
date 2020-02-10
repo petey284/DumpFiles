@@ -134,7 +134,7 @@ namespace DumpFiles
             Console.WriteLine(parsedXml.Document);
 
             var backupProjectFile = currentProjectFile.Replace(".csproj", ".csproj.bak");
-            var anotherProjectFile = currentProjectFile.Replace(".csproj", "One.csproj");
+            var anotherProjectFile = currentProjectFile.Replace(".csproj", ".csproj.TOUPDATE");
 
             if (File.Exists(backupProjectFile)) { File.Delete(backupProjectFile); }
             File.Copy(currentProjectFile, backupProjectFile);
@@ -143,6 +143,13 @@ namespace DumpFiles
             {
                 writer.Write(parsedXml.Document);
             }
+            
+            // Begin copy of all relevant files to the new temp directory
+            var currentWorkingDirectory = new FileInfo(currentProjectFile).Directory.ToString();
+            procedures.DuplicateAllFilesIncludingProjAndEmbedExcludingGitIgnored(
+                currentWorkingDirectory,
+                new FileInfo(anotherProjectFile),
+                new FileInfo(embed.Pathname));
 
             // Run csharp compiler.
             var compiler = new Standard("C:\\Program Files\\dotnet\\dotnet.exe");
