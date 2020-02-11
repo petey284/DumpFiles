@@ -80,7 +80,9 @@ namespace DumpFiles
             string dirName,
             FileInfo embedFileInfo)
         {
-            var relevantFiles = GetFilesViaGit(dirName);
+            var relevantFilesOne = GetFilesViaGit(dirName);
+
+            var relevantFiles = GetFilesFromToDuplicateFile(dirName);
 
             // Create new directory and copy relevant files
             if (Directory.Exists("temp")) { Directory.Delete("temp", true); }
@@ -102,6 +104,11 @@ namespace DumpFiles
             embedFileInfo.CopyTo(newEmbedFileName);
 
             return (newEmbedFileName, newProjectFilename);
+        }
+
+        private List<FileInfo> GetFilesFromToDuplicateFile(string dirName)
+        {
+            return new List<FileInfo>();
         }
 
         public List<FileInfo> GetFilesViaGit(string dirName)
