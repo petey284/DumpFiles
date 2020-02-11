@@ -76,9 +76,8 @@ namespace DumpFiles
             return itemGroup;
         }
 
-        public void DuplicateAllFilesIncludingProjAndEmbedExcludingGitIgnored(
+        public (string, string) DuplicateAllFilesIncludingProjAndEmbedExcludingGitIgnoredReturnEmbed(
             string dirName,
-            FileInfo newProjectFileInfo,
             FileInfo embedFileInfo)
         {
             var relevantFiles = GetFilesViaGit(dirName);
@@ -87,6 +86,7 @@ namespace DumpFiles
             if (Directory.Exists("temp")) { Directory.Delete("temp", true); }
             var tempDir = Directory.CreateDirectory("temp");
 
+            var newProjectFilename = string.Empty;
             foreach (var _file in relevantFiles)
             {
                 if (!_file.Name.Contains(".csproj") && !_file.Name.Contains("gitignore"))
@@ -96,15 +96,12 @@ namespace DumpFiles
                 }
             }
 
-            var newProjectFileName =
-                Path.Combine(tempDir.FullName, newProjectFileInfo.Name.Replace(".csproj.TOUPDATE", ".csproj"));
-
-            newProjectFileInfo.CopyTo(newProjectFileName);
-
             var newEmbedFileName =
                 Path.Combine(tempDir.FullName, embedFileInfo.Name);
 
             embedFileInfo.CopyTo(newEmbedFileName);
+
+            return (newEmbedFileName, newProjectFilename);
         }
 
         public List<FileInfo> GetFilesViaGit(string dirName)

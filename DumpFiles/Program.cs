@@ -122,35 +122,37 @@ namespace DumpFiles
             var procedures = new Procedures();
             var embed = procedures.CollectFilesFromDirectoryProvidedBySecretsAndSaveAsEmbed();
 
-            // Read project file.
-            var xml = new XmlDocument();
-            xml.Load(currentProjectFile);
-
-            var parsedXml = new XDocument(XDocument.Parse(xml.OuterXml));
-
-            var embedElement = procedures.AddEmbedItemGroup(parsedXml, embed.Pathname);
-            parsedXml.Root.Add(embedElement);
-
-            Console.WriteLine(parsedXml.Document);
-
+            // Begin copy of all relevant files to the new temp directory
             var backupProjectFile = currentProjectFile.Replace(".csproj", ".csproj.bak");
             var anotherProjectFile = currentProjectFile.Replace(".csproj", ".csproj.TOUPDATE");
 
             if (File.Exists(backupProjectFile)) { File.Delete(backupProjectFile); }
             File.Copy(currentProjectFile, backupProjectFile);
 
-            using (var writer = new StreamWriter(anotherProjectFile, true))
-            {
-                writer.Write(parsedXml.Document);
-            }
-            
-            // Begin copy of all relevant files to the new temp directory
             var currentWorkingDirectory = new FileInfo(currentProjectFile).Directory.ToString();
-            procedures.DuplicateAllFilesIncludingProjAndEmbedExcludingGitIgnored(
-                currentWorkingDirectory,
-                new FileInfo(anotherProjectFile),
-                new FileInfo(embed.Pathname));
+            var (newEmbedPathname, newProjectFilename) = procedures
+                .DuplicateAllFilesIncludingProjAndEmbedExcludingGitIgnoredReturnEmbed(
+                    currentWorkingDirectory,
+                    new FileInfo(embed.Pathname));
 
+            if (!string.IsNullOrEmpty(newProjectFilename))
+            {
+                // Begin update to project xml file.
+                var xml = new XmlDocument();
+                xml.Load(newProjectFilename);
+
+                var parsedXml = new XDocument(XDocument.Parse(xml.OuterXml));
+
+                var embedElement = procedures.AddEmbedItemGroup(parsedXml, newEmbedPathname);
+                parsedXml.Root.Add(embedElement);
+
+                Console.WriteLine(parsedXml.Document);
+
+                using (var writer = new StreamWriter(anotherProjectFile, false))
+                {
+                    writer.Write(parsedXml.Document);
+                }
+            }
             // Run csharp compiler.
             var compiler = new Standard("C:\\Program Files\\dotnet\\dotnet.exe");
             // compiler.RunAndWaitForExit("");
